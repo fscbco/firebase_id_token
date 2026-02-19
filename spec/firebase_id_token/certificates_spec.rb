@@ -11,15 +11,15 @@ module FirebaseIdToken
     let (:response) { double }
 
     let (:mock_response) {
-      allow(response).to receive(:code) { 200 }
-      allow(response).to receive(:headers) { { 'cache-control' => cache } }
+      allow(response).to receive(:code) { '200' }
+      allow(response).to receive(:[]).with('cache-control') { cache }
       allow(response).to receive(:body) { certs }
     }
 
     let(:mock_request) {
       mock_response
-      allow(HTTParty).to receive(:get).
-        with(an_instance_of(String)) { response }
+      allow(Net::HTTP).to receive(:get_response).
+        with(URI(described_class::URL)) { response }
     }
 
     before :each do
@@ -29,22 +29,22 @@ module FirebaseIdToken
 
     describe '#request' do
       it 'requests certificates when Redis database is empty' do
-        expect(HTTParty).to receive(:get).
-          with(FirebaseIdToken::Certificates::URL)
+        expect(Net::HTTP).to receive(:get_response).
+          with(URI(described_class::URL))
         described_class.request
       end
 
       it 'does not requests certificates when Redis database is written' do
-        expect(HTTParty).to receive(:get).
-          with(FirebaseIdToken::Certificates::URL).once
+        expect(Net::HTTP).to receive(:get_response).
+          with(URI(described_class::URL)).once
         2.times { described_class.request }
       end
     end
 
     describe '#request!' do
       it 'always requests certificates' do
-        expect(HTTParty).to receive(:get).
-          with(FirebaseIdToken::Certificates::URL).twice
+        expect(Net::HTTP).to receive(:get_response).
+          with(URI(described_class::URL)).twice
         2.times { described_class.request! }
       end
 
@@ -54,13 +54,13 @@ module FirebaseIdToken
       end
 
       it 'raises a error when certificates expires in less than 1 hour' do
-        allow(response).to receive(:headers) {{'cache-control' => low_cache}}
+        allow(response).to receive(:[]).with('cache-control') { low_cache }
         expect{ described_class.request! }.
           to raise_error(Exceptions::CertificatesTtlError)
       end
 
       it 'raises a error when HTTP response code is other than 200' do
-        allow(response).to receive(:code) { 401 }
+        allow(response).to receive(:code) { '401' }
         expect{ described_class.request! }.
           to raise_error(Exceptions::CertificatesRequestError)
       end
@@ -68,8 +68,8 @@ module FirebaseIdToken
 
     describe '#request_anyway' do
       it 'also requests certificates' do
-        expect(HTTParty).to receive(:get).
-          with(FirebaseIdToken::Certificates::URL)
+        expect(Net::HTTP).to receive(:get_response).
+          with(URI(described_class::URL))
 
         described_class.request_anyway
       end

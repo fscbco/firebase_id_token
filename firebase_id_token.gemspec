@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 2.4', '>= 2.4.13'
+  spec.add_development_dependency 'bundler', '>= 2.4.13'
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'rspec', '~> 3.12'
   spec.add_development_dependency 'redcarpet', '~> 3.6'
@@ -32,7 +32,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'redis', '~> 5.0', '>= 5.0.6'
   spec.add_runtime_dependency 'redis-namespace', '~> 1.10'
-  spec.add_dependency 'httparty', '~> 0.21.0'
   spec.add_runtime_dependency 'jwt', '~> 2.7'
   spec.add_runtime_dependency 'activesupport', '~> 7.0', '>= 7.0.4.3'
   spec.add_runtime_dependency 'json', '~> 2.6', '>= 2.6.3'

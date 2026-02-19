@@ -166,8 +166,8 @@ module FirebaseIdToken
 
     # @see Certificates.request!
     def request!
-      @request = HTTParty.get URL
-      code = @request.code
+      @request = Net::HTTP.get_response(URI(URL))
+      code = @request.code.to_i
       if code == 200
         save_certificates
       else
@@ -188,7 +188,7 @@ module FirebaseIdToken
     end
 
     def ttl
-      cache_control = @request.headers['cache-control']
+      cache_control = @request['cache-control']
       ttl = cache_control.match(/max-age=([0-9]+)/).captures.first.to_i
 
       if ttl > 3600

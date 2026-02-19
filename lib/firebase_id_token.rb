@@ -1,6 +1,6 @@
 require 'redis'
 require 'redis-namespace'
-require 'httparty'
+require 'net/http'
 require 'jwt'
 require 'active_support'
 require 'active_support/time'
